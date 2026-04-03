@@ -1,0 +1,49 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editors & IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*.iml
+.classpath
+.project
+.settings/
+.vs/
+.agent
+*.user
+
+# Node.js (Frontend)
+node_modules/
+dist/
+build/
+coverage/
+.env
+.env.*
+! .env.example
+
+# Java / Spring (Backend Core)
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Python (AI Bridge)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+env/
+.venv/
+
+# Docker
+.docker/
