@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   server-core:
@@ -50,9 +55,7 @@ services:
       dockerfile: Dockerfile
     container_name: opendesign-client
     ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_URL=http://localhost:8080
+      - "3000:80"
     depends_on:
       - server-core
     restart: unless-stopped

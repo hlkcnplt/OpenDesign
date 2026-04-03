@@ -38,7 +38,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       working-directory: ./server-core
-      run: mvn -B package --file pom.xml -DskipTests
+      run: ./mvnw -B package --file pom.xml -DskipTests
 
   server-ai-check:
     name: Python AI Bridge Check
