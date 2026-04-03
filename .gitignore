@@ -30,6 +30,10 @@ coverage/
 .env.*
 ! .env.example
 
+# UI Assets
+ui/**/*.bak
+ui/**/*.tmp
+
 # Java / Spring (Backend Core)
 target/
 !.mvn/wrapper/maven-wrapper.jar

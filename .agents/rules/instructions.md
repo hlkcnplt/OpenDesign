@@ -43,3 +43,4 @@ Before making any significant change, read the relevant steering document from `
 | Docker, CI/CD, env vars      | `.agents/steering/infrastructure.md`          |
 | Naming anything              | `.agents/steering/naming.md`                  |
 | Linting, code review, security | `.agents/steering/code-quality.md`          |
+| UI Design, System Spec       | `.agents/steering/ui-inventory.md`            |
