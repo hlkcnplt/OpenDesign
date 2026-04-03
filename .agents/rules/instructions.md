@@ -2,82 +2,44 @@
 trigger: always_on
 ---
 
-# 🧠 OpenDesign - AI Development Context & Instructions (Hybrid AI Version)
+# OpenDesign — AI Assistant Context
 
-**OpenDesign** is a hybrid, AI-agnostic UI/UX auditing and design versioning platform. It allows users to manage screens on an infinite canvas and leverage various AI providers (Local or Cloud) to perform automated design critiques.
+**OpenDesign** is a hybrid, AI-agnostic UI/UX auditing platform with a Figma-like infinite canvas. Users upload application screenshots, an AI model analyzes them for UX heuristics, and annotates issues directly on the canvas. Users can compare screen versions and switch between AI providers freely.
 
----
+## Critical Architecture Rule
 
-## 🎯 Project Mission & Vision
+**API Key Flow:** Frontend (React) → server-core (Java) → server-ai (Python).
+The user selects the AI provider and enters their API key from the UI. The key travels in the request body only, is never stored in the database, and is never logged at any layer.
 
-- **Infinite Canvas:** A Figma-like workspace using React-Konva for spatial organization of UI assets.
-- **Hybrid AI Auditing:** Flexible integration with multiple AI providers (Google Gemini, OpenAI, or Local models like Qwen 3.5) to analyze screens based on UX heuristics.
-- **Provider Switching:** Seamlessly toggle between Local AI (for privacy/offline use) and Cloud APIs (for high-reasoning capabilities) via configuration.
-- **Version Delta:** Comparison of design iterations with semantic AI analysis of UI changes.
+## Stack (Non-Negotiable)
 
----
+| Layer       | Technology                              |
+|-------------|-----------------------------------------|
+| Frontend    | React 18, Vite, Tailwind CSS v4, Zustand, React-Konva |
+| Backend     | Java 21, Spring Boot 3.3, PostgreSQL 15 |
+| AI Bridge   | Python 3.10, FastAPI, Pydantic v2       |
+| Deployment  | Docker Compose                          |
 
-## 🛠 Tech Stack Constraints
+## Mandatory Rules (Summary)
 
-The AI Assistant must adhere to these standards to ensure provider flexibility:
+- Java DTOs must be `record` types. Services must have interfaces. Constructor injection only.
+- Python: all functions typed, Pydantic for all I/O, `async def` everywhere, `BaseAIProvider` for all adapters.
+- React: all data-fetching in custom hooks, no logic in components, API key only in Zustand memory (never localStorage).
+- Endpoints versioned under `/api/v1/`.
+- Commit messages follow Conventional Commits format.
+- No comments in code. No emojis in code or files.
 
-### 1. Frontend (Client)
+## Detailed Steering Documents
 
-- **Framework:** React 18+ (Vite), Tailwind CSS.
-- **Canvas:** React-Konva.
-- **State:** Zustand (Should manage AI provider settings/status).
+Before making any significant change, read the relevant steering document from `.agents/steering/`:
 
-### 2. Backend (Server-Core)
-
-- **Language:** Java 21, Spring Boot 3.3+.
-- **Orchestration:** Must handle generic "AI Tasks" and store provider-specific metadata in PostgreSQL.
-
-### 3. AI Service (Server-AI / Bridge)
-
-- **Language:** Python 3.10+, FastAPI.
-- **Abstraction Layer:** Use **Adapter Pattern** or LangChain's unified interface to support:
-  - **Cloud:** Google Gemini API, OpenAI (GPT-4o), Anthropic.
-  - **Local:** LM Studio, Ollama, or vLLM (via OpenAI-compatible local endpoints).
-- **Environment Config:** Use `.env` to switch `AI_PROVIDER` (e.g., `GEMINI`, `OPENAI`, `LOCAL`).
-
----
-
-## 🏗 Architectural Flow Rules
-
-1.  **Provider Abstraction:** Code must be written so that adding a new AI model (e.g., a new Google model) requires only a new configuration or a small adapter class, not a rewrite of the core logic.
-2.  **Async Orchestration:** Regardless of the provider, AI analysis must be handled asynchronously to prevent UI blocking.
-3.  **Fallback Mechanism:** Implement logic to suggest or switch to a fallback provider if the primary (e.g., Local AI) is unreachable.
-
----
-
-## 📝 Coding Standards (Strict)
-
-### Java (Backend) Rules:
-
-- Use **`record`** types for DTOs.
-- Design services to be provider-blind (Core logic shouldn't care if the response came from Gemini or Qwen).
-- Mandatory Javadoc for every public method.
-
-### Python (AI Bridge) Rules:
-
-- **Interface-Driven:** Create a base `BaseAIProvider` class that defines standard methods like `analyze_image()`.
-- **Type Hinting:** Mandatory use of Pydantic for request/response validation.
-
-### React (Frontend) Rules:
-
-- UI must indicate which AI provider is currently active.
-- Use **Custom Hooks** for all canvas and AI interaction logic.
-
----
-
-## 📂 Data Model Draft
-
-- **Project:** `id, name, description, owner_id, created_at`
-- **Screen:** `id, project_id, version_tag, image_url, x, y, scale`
-- **AI_Report:** `id, screen_id, provider_name, model_version, raw_json_response`
-- **Annotation:** `id, report_id, x, y, issue_description, severity`
-
----
-
-**Current Context:** Project initialization phase.
-**Objective:** Build a highly flexible, open-source AI tool that showcases elite software engineering by supporting any LLM/Vision provider.
+| Task involves...             | Read this file first                          |
+|------------------------------|-----------------------------------------------|
+| System design, data flow     | `.agents/steering/architecture.md`            |
+| React, UI, Zustand, hooks    | `.agents/steering/frontend.md`                |
+| Java, Spring Boot, JPA       | `.agents/steering/backend.md`                 |
+| Python, FastAPI, AI adapters | `.agents/steering/ai-bridge.md`               |
+| Writing or fixing tests      | `.agents/steering/testing.md`                 |
+| Docker, CI/CD, env vars      | `.agents/steering/infrastructure.md`          |
+| Naming anything              | `.agents/steering/naming.md`                  |
+| Linting, code review, security | `.agents/steering/code-quality.md`          |
