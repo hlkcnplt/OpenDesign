@@ -1,4 +1,8 @@
-.PHONY: up down prod-up prod-down logs ps clean
+.PHONY: dev up down prod-up prod-down logs ps clean
+
+dev:
+	./scripts/dev.sh
+
 
 up:
 	docker compose up --build -d

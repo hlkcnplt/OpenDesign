@@ -36,7 +36,18 @@ The application will prompt you to configure your AI provider on first launch.
 
 ## Local Development Setup
 
-For active development, it is recommended to run each service natively for hot-reloading:
+For active development, you can start all services with a single command:
+
+```bash
+make dev
+```
+
+This will:
+1. Ensure `.env` exists.
+2. Start PostgreSQL in Docker.
+3. Start the AI Bridge (Python), Core Service (Java), and Client (React) concurrently with hot-reload enabled.
+
+Alternatively, you can run each service natively:
 
 ### 1. Start the Database
 
