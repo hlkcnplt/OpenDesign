@@ -19,23 +19,6 @@ services:
       retries: 5
     restart: unless-stopped
 
-  server-core:
-    build:
-      context: ./server-core
-      dockerfile: Dockerfile
-    container_name: opendesign-server-core
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-opendesign}
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - AI_SERVICE_URL=http://server-ai:8000
-    depends_on:
-      - postgres
-      - server-ai
-    restart: unless-stopped
-
   server-ai:
     build:
       context: ./server-ai
@@ -49,13 +32,34 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     restart: unless-stopped
 
+  server-core:
+    build:
+      context: ./server-core
+      dockerfile: Dockerfile
+    container_name: opendesign-server-core
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-opendesign}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - AI_SERVICE_URL=http://server-ai:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      server-ai:
+        condition: service_started
+    restart: unless-stopped
+
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8080}
     container_name: opendesign-client
     ports:
-      - "3000:80"
+      - "5173:80"
     depends_on:
       - server-core
     restart: unless-stopped

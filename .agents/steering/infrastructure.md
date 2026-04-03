@@ -1,5 +1,28 @@
 # OpenDesign — Infrastructure
 
+## Deployment Strategy
+
+OpenDesign is built for two distinct use cases:
+1. **Self-Hosted:** Local or small-team use, services exposed on unique ports.
+2. **Production:** SaaS-ready hosting behind an Nginx gateway, all internal ports blocked.
+
+All management should be done via the root `Makefile`.
+
+---
+
+## Command Shortcuts
+
+| Command | Action |
+|---------|--------|
+| `make up` | Start self-hosted stack (`docker-compose.yml`) |
+| `make down` | Stop self-hosted stack |
+| `make prod-up` | Start production stack (base + `docker-compose.prod.yml`) |
+| `make prod-down` | Stop production stack |
+| `make logs` | View all container logs |
+| `make clean` | Remove all containers, volumes, and orphans |
+
+---
+
 ## Local Development Stack
 
 All services are orchestrated via Docker Compose for local development. A developer must be able to run the entire stack with a single command after configuring `.env`.
@@ -7,76 +30,38 @@ All services are orchestrated via Docker Compose for local development. A develo
 ```bash
 cp .env.example .env
 # Edit .env with your API keys if using cloud providers
-docker-compose up -d --build
+make up
 ```
 
-### Service URLs (Local)
+### Service URLs (Local / Self-Hosted)
 
-| Service       | URL                      |
-|---------------|--------------------------|
-| React Client  | http://localhost:5173    |
-| Java Core API | http://localhost:8080    |
-| Python AI API | http://localhost:8000    |
-| PostgreSQL    | localhost:5432           |
-| API Docs (AI) | http://localhost:8000/docs |
-
-### Docker Compose Rules
-
-- Use named volumes for PostgreSQL data persistence across container restarts.
-- Services depend on each other using `depends_on` with `condition: service_healthy` where possible.
-- The `client` service in Docker Compose is for integration use only. During development, run Vite locally (`npm run dev`) for hot module replacement.
-- The `server-core` and `server-ai` Dockerfiles use multi-stage builds to keep production images lean.
-
-### Development Without Docker (Fast Iteration)
-
-For faster iteration on a single service:
-
-**Frontend:**
-```bash
-cd client
-npm install
-npm run dev
-```
-
-**Java Core:**
-```bash
-cd server-core
-./mvnw spring-boot:run
-```
-Requires PostgreSQL running locally or via `docker-compose up postgres -d`.
-
-**AI Bridge:**
-```bash
-cd server-ai
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+| Service       | URL                      | Mapping |
+|---------------|--------------------------|---------|
+| React Client  | http://localhost:5173    | 3000:80 |
+| Java Core API | http://localhost:8080    | 8080:8080 |
+| Python AI API | http://localhost:8000    | 8000:8000 |
+| PostgreSQL    | localhost:5432           | 5432:5432 |
 
 ---
 
-## CI/CD (GitHub Actions)
+## Production / SaaS Architecture
 
-Pipeline file: `.github/workflows/ci.yml`
+In production, an internal Nginx container (`nginx-gateway`) serves as the single public exposure on port 80.
 
-### Pipeline Stages
+### Gateway Routing
 
-```
-PR / Push to main
-       │
-       ├─── client-build ──── npm install → npm run test → npm run build
-       │
-       ├─── server-core-build ── ./mvnw test → ./mvnw verify
-       │
-       └─── server-ai-check ── pip install → pytest → python -m py_compile
-```
+| Entry Path | Backend Container | Internal Port |
+|------------|-------------------|---------------|
+| `/`        | `client`          | 80            |
+| `/api/`    | `server-core`     | 8080          |
+| `/ai/`     | `server-ai`       | 8000          |
 
-### Rules
+### Configuration Rules (Production)
 
-- All three jobs must pass before a PR can be merged.
-- The workflow uses GitHub's dependency caching (`actions/cache`) for `node_modules`, Maven local repository, and pip.
-- Secrets (`OPENAI_API_KEY`, `GEMINI_API_KEY`) must be stored in GitHub Actions Secrets and never hardcoded in workflow files.
-- The integration test job (`./mvnw verify`) only runs on pushes to `main`, not on PRs, to avoid Testcontainers overhead on every PR.
+- Use `.env.prod` for all secure credentials.
+- All internal service ports (5432, 8080, 8000) **MUST NOT** be exposed to the public internet.
+- Ensure `VITE_API_BASE_URL` in `.env.prod` is set to the full public domain.
+- Docker images use multi-stage builds (`eclipse-temurin` for Java, `node:20-alpine` for frontend).
 
 ---
 
@@ -84,59 +69,33 @@ PR / Push to main
 
 All environment variables are documented in `.env.example`. No service may read a configuration value that is not listed there.
 
-### Root-level (consumed by docker-compose)
+### Core Variables
 
-| Variable           | Description                                  |
-|--------------------|----------------------------------------------|
-| `POSTGRES_USER`    | Database user                                |
-| `POSTGRES_PASSWORD`| Database password                            |
-| `POSTGRES_DB`      | Database name                                |
-| `AI_PROVIDER`      | Default provider for dev: `LOCAL`            |
-| `OPENAI_API_KEY`   | Dev default key for OpenAI (optional)        |
-| `GEMINI_API_KEY`   | Dev default key for Gemini (optional)        |
-| `LOCAL_AI_ENDPOINT`| Ollama / LM Studio URL                       |
-| `LOCAL_AI_MODEL_NAME` | Default model name for local AI          |
-
-### server-core (`application.yml`)
-
-| Property                          | Source              |
-|-----------------------------------|---------------------|
-| `spring.datasource.url`           | `SPRING_DATASOURCE_URL` |
-| `spring.datasource.username`      | `SPRING_DATASOURCE_USERNAME` |
-| `spring.datasource.password`      | `SPRING_DATASOURCE_PASSWORD` |
-| `opendesign.ai-service.url`       | `AI_SERVICE_URL`    |
-
-### server-ai (`.env` via python-dotenv)
-
-| Variable           | Description                                  |
-|--------------------|----------------------------------------------|
-| `AI_PROVIDER`      | Dev default provider fallback                |
-| `OPENAI_API_KEY`   | Dev default (request.api_key takes priority) |
-| `GEMINI_API_KEY`   | Dev default (request.api_key takes priority) |
-| `LOCAL_AI_ENDPOINT`| Dev default endpoint                         |
+| Variable | Description |
+|----------|-------------|
+| `POSTGRES_PASSWORD` | Strong password for production |
+| `AI_PROVIDER` | Default AI provider (LOCAL, OPENAI, GEMINI) |
+| `VITE_API_BASE_URL` | Public domain URL (critical for production client build) |
+| `LOCAL_AI_ENDPOINT` | URL for Ollama/LM Studio if using LOCAL provider |
 
 ---
 
-## Docker Image Strategy
+## CI/CD (GitHub Actions)
 
-### server-core Dockerfile
+Pipeline file: `.github/workflows/ci.yml`
 
-Uses a two-stage build:
-1. `eclipse-temurin:21-jdk-jammy` builds the JAR with Maven.
-2. `eclipse-temurin:21-jre-jammy` serves as the minimal runtime image.
+The CI pipeline runs automated checks on every PR to verify that the build-ready states are maintained for all three services.
 
-### server-ai Dockerfile
+### Rules
 
-Uses `python:3.10-slim` single-stage. Dependencies are installed from `requirements.txt`.
-
-### client Dockerfile
-
-Uses `node:20-alpine` to install and build, then `nginx:alpine` to serve the static bundle.
+- All jobs must pass before a PR can be merged.
+- Integration tests use Testcontainers and only run on pushes to `main`.
+- Secrets for CI/CD must be stored in GitHub Actions Secrets.
 
 ---
 
-## Observability (Future)
+## Observability
 
-- Spring Boot Actuator endpoints will be exposed at `/actuator/health` for Docker health checks.
-- Structured logging with JSON format will be adopted before production deployment.
-- A `docker-compose.observability.yml` overlay will add Prometheus + Grafana stack for local metrics viewing.
+- Spring Boot Actuator endpoints are exposed for health checks.
+- Structured JSON logging is used for production logs.
+- Future: A `docker-compose.observability.yml` overlay for Prometheus + Grafana.

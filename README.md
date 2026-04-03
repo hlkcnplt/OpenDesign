@@ -24,23 +24,48 @@ This repository is a polyglot monorepo containing three distinct services:
    - Python 3.10+ using FastAPI.
    - Implements abstract adapters to connect seamlessly with diverse AI Vision models.
 
-## Local Setup Using Docker
+## Deployment Options
 
-The easiest way to run the entire stack locally is utilizing Docker Compose.
+OpenDesign is designed for both personal/community use and production-grade hosting.
+
+### 1. Community / Self-Hosted (Quickstart)
+
+Ideal for individuals running the stack on their local machine or a private server.
 
 ```bash
-# 1. Copy the environment variables template
+# 1. Clone & enter repository
+git clone https://github.com/hlkcnplt/OpenDesign.git
+cd OpenDesign
+
+# 2. Configure environment
 cp .env.example .env
 
-# 2. Fill in the relevant API keys inside .env
-
-# 3. Spin up the containers
-docker-compose up -d --build
+# 3. Start stack
+make up
 ```
-    
-- Frontend Client: `http://localhost:5173`
-- Java Backend: `http://localhost:8080`
-- Python AI Bridge: `http://localhost:8000`
+
+Access at: `http://localhost:5173`
+
+### 2. Production / Custom Domain
+
+Designed for multi-user SaaS deployments behind a reverse proxy (e.g., Cloudflare, Nginx). Includes a root-level gateway to handle routing.
+
+```bash
+# 1. Prepare production environment
+cp .env.example .env.prod
+# Edit .env.prod with your domain and secure passwords
+
+# 2. Start production stack
+make prod-up
+```
+
+*For more details see: [Production Deployment Guide](docs/deployment/production.md)*
+
+## Detailed Documentation
+
+- [Getting Started](docs/getting-started/index.md)
+- [Self-Hosted Setup](docs/deployment/self-hosted.md)
+- [Production Setup](docs/deployment/production.md)
 
 ## Contributing
 
