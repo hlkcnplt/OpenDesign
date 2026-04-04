@@ -23,7 +23,7 @@ fi
 source .env
 
 # Mandatory Overrides for LOCAL (Native) Development
-export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/${POSTGRES_DB:-opendesign}"
+export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5433/${POSTGRES_DB:-opendesign}"
 export AI_SERVICE_URL="http://localhost:8000"
 export VITE_API_BASE_URL="http://localhost:8080"
 
