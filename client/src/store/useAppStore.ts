@@ -1,11 +1,12 @@
 import { create } from 'zustand';
+import type { AppStore } from '../types';
 
-interface AppState {
-  aiProvider: 'GEMINI' | 'OPENAI' | 'LOCAL';
-  setAiProvider: (provider: 'GEMINI' | 'OPENAI' | 'LOCAL') => void;
-}
-
-export const useAppStore = create<AppState>((set) => ({
-  aiProvider: 'LOCAL',
-  setAiProvider: (provider) => set({ aiProvider: provider }),
+export const useAppStore = create<AppStore>((set) => ({
+  isSidebarOpen: true,
+  isSettingsOpen: false,
+  activeTool: 'select',
+  setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
+  setSettingsOpen: (isOpen) => set({ isSettingsOpen: isOpen }),
+  setActiveTool: (tool) => set({ activeTool: tool }),
 }));
+
