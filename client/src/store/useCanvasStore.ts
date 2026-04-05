@@ -29,7 +29,7 @@ export type CanvasStore = CanvasState & CanvasActions;
 
 export const useCanvasStore = create<CanvasStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       stagePosition: { x: 0, y: 0 },
       stageScale: 1,
       projects: [{ id: 'default', name: 'Untitled Design', screens: [] }],

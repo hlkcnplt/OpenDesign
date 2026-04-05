@@ -39,8 +39,10 @@ export function useAIAnalysis() {
       
       // Update screen with annotations
       useCanvasStore.setState((state) => ({
-        screens: state.screens.map(s => 
-          s.id === screen.id ? { ...s, annotations: result.annotations } : s
+        projects: state.projects.map(p => 
+          p.id === state.activeProjectId 
+            ? { ...p, screens: p.screens.map(s => s.id === screen.id ? { ...s, annotations: result.annotations } : s) }
+            : p
         )
       }));
 

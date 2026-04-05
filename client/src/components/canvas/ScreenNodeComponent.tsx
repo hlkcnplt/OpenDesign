@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image as KonvaImage, Group, Rect, Text, Circle, Path } from 'react-konva';
+import { Image as KonvaImage, Group, Rect, Text, Circle } from 'react-konva';
 import { Html } from 'react-konva-utils';
 import { Trash2, Sparkles } from 'lucide-react';
 import useImage from 'use-image';
