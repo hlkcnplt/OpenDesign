@@ -1,6 +1,6 @@
-# Contributing to OpenDesign
+# Contributing to oux.ai
 
-Thank you for your interest in contributing to OpenDesign! 
+Thank you for your interest in contributing to oux.ai! We welcome community contributions to help make this the best Open Source UX auditing platform.
 
 ## Code of Conduct
 

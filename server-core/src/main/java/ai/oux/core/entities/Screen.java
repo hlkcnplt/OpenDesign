@@ -1,4 +1,4 @@
-package com.opendesign.core.entities;
+package ai.oux.core.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

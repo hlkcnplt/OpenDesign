@@ -92,7 +92,7 @@ export const useCanvasStore = create<CanvasStore>()(
       
     }),
     {
-      name: 'opendesign-canvas-storage',
+      name: 'oux-ai-canvas-storage',
       partialize: (state) => ({ projects: state.projects, activeProjectId: state.activeProjectId }),
     }
   )

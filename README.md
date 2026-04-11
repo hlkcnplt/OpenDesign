@@ -1,8 +1,8 @@
-# OpenDesign
+# oux.ai
 
 **Hybrid AI-Agnostic UI/UX Auditing Platform**
 
-OpenDesign is a powerful, open-source tool built to help designers and developers refine user interfaces. It provides a Figma-like infinite canvas where users can upload application screens, and it leverages AI to analyze these screens based on UX heuristics. 
+oux.ai is a powerful, open-source tool built to help designers and developers refine user interfaces. It provides a Figma-like infinite canvas where users can upload application screens, and it leverages AI to analyze these screens based on UX heuristics. 
 
 It supports various AI backends to fit your workflow and privacy needs: Cloud models like Google Gemini or OpenAI GPT-4o, or Local models using Ollama/LM Studio.
 
@@ -26,7 +26,7 @@ This repository is a polyglot monorepo containing three distinct services:
 
 ## Deployment Options
 
-OpenDesign is designed for both personal/community use and production-grade hosting.
+oux.ai is designed for both personal/community use and production-grade hosting.
 
 ### 1. Community / Self-Hosted (Quickstart)
 
@@ -34,8 +34,8 @@ Ideal for individuals running the stack on their local machine or a private serv
 
 ```bash
 # 1. Clone & enter repository
-git clone https://github.com/hlkcnplt/OpenDesign.git
-cd OpenDesign
+git clone https://github.com/hlkcnplt/oux.ai.git
+cd oux.ai
 
 # 2. Configure environment
 cp .env.example .env

@@ -1,8 +1,8 @@
 spring:
   application:
-    name: opendesign-core
+    name: oux-core
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/opendesign}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/oux}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
@@ -13,6 +13,6 @@ spring:
       hibernate:
         format_sql: true
 
-opendesign:
+oux:
   ai-service:
     url: ${AI_SERVICE_URL:http://localhost:8000}

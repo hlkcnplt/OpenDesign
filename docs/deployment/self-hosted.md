@@ -1,6 +1,6 @@
 # Self-Hosted Deployment Guide
 
-This guide is for developers and small teams who want to host OpenDesign on their own infrastructure or run it locally for evaluation.
+This guide is for developers and small teams who want to host oux.ai on their own infrastructure or run it locally for evaluation.
 
 ## Prerequisites
 
@@ -15,8 +15,8 @@ This guide is for developers and small teams who want to host OpenDesign on thei
 Clone the repository and enter the directory:
 
 ```bash
-git clone https://github.com/hlkcnplt/OpenDesign.git
-cd OpenDesign
+git clone https://github.com/hlkcnplt/oux.ai.git
+cd oux.ai
 ```
 
 ### 2. Configure Environment
@@ -56,11 +56,11 @@ In a self-hosted Docker setup, the services are mapped as follows:
 
 ## Local AI (Ollama / LM Studio)
 
-To use OpenDesign without cloud costs, you can link it to a local AI runner.
+To use oux.ai without cloud costs, you can link it to a local AI runner.
 
 1. Ensure Ollama is running on your host machine.
 2. In the `.env` file, ensure `LOCAL_AI_ENDPOINT` is set to `http://host.docker.internal:11434/v1` (this lets the Docker container talk back to your host machine).
-3. Access OpenDesign at `http://localhost:5173`.
+3. Access oux.ai at `http://localhost:5173`.
 4. Go to Settings and select **LOCAL** as the provider.
 
 ## Maintenance

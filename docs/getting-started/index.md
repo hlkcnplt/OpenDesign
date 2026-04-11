@@ -1,4 +1,4 @@
-# Getting Started with OpenDesign
+# Getting Started with oux.ai
 
 ## Prerequisites
 
@@ -16,8 +16,8 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/hlkcnplt/OpenDesign.git
-cd OpenDesign
+git clone https://github.com/hlkcnplt/oux.ai.git
+cd oux.ai
 
 # 2. Copy and configure environment variables
 cp .env.example .env
@@ -84,7 +84,7 @@ npm run dev
 
 ## Configuring an AI Provider
 
-OpenDesign does not require any server-side API key configuration for provider selection. Providers are selected and keys are entered from the **Settings Panel** in the UI.
+oux.ai does not require any server-side API key configuration for provider selection. Providers are selected and keys are entered from the **Settings Panel** in the UI.
 
 ### Cloud Providers (Gemini, OpenAI)
 

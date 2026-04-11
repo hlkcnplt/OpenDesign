@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# OpenDesign Local Development Orchestrator
+# oux.ai Local Development Orchestrator
 # Starts: Postgres (Docker), AI Bridge (Python), Core (Java), Client (React/Vite)
 
 # Kill all background processes on exit (including those in subshells)
@@ -23,7 +23,7 @@ fi
 source .env
 
 # Mandatory Overrides for LOCAL (Native) Development
-export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5433/${POSTGRES_DB:-opendesign}"
+export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5433/${POSTGRES_DB:-oux}"
 export AI_SERVICE_URL="http://localhost:8000"
 export VITE_API_BASE_URL="http://localhost:8080"
 
@@ -38,7 +38,7 @@ docker compose up postgres -d
 echo "Waiting for PostgreSQL to be fully ready..."
 MAX_RETRIES=30
 COUNT=0
-while ! docker exec opendesign-db pg_isready -U "${POSTGRES_USER:-postgres}" >/dev/null 2>&1; do
+while ! docker exec oux-db pg_isready -U "${POSTGRES_USER:-postgres}" >/dev/null 2>&1; do
     echo "Database is initializing... ($((COUNT+1))/$MAX_RETRIES)"
     sleep 2
     COUNT=$((COUNT+1))
@@ -70,7 +70,7 @@ echo "Starting Java Core (server-core)..."
 (
     cd server-core
     # Explicitly pass properties to avoid Docker hostname conflicts
-    ./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=$SPRING_DATASOURCE_URL --spring.datasource.username=${POSTGRES_USER:-postgres} --spring.datasource.password=${POSTGRES_PASSWORD:-postgres} --opendesign.ai-service.url=$AI_SERVICE_URL"
+    ./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=$SPRING_DATASOURCE_URL --spring.datasource.username=${POSTGRES_USER:-postgres} --spring.datasource.password=${POSTGRES_PASSWORD:-postgres} --oux.ai-service.url=$AI_SERVICE_URL"
 ) &
 
 # 6. Client Service (React Vite)

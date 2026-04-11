@@ -1,12 +1,12 @@
 # Production Deployment Guide
 
-This guide is for deploying OpenDesign as a ready-to-use SaaS platform on a public domain.
+This guide is for deploying oux.ai as a ready-to-use SaaS platform on a public domain.
 
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) (v24+)
 - [Docker Compose](https://docs.docker.com/compose/install/) (v2+)
-- A public domain name (e.g., `opendesign.yourdomain.com`).
+- A public domain name (e.g., `oux.yourdomain.com`).
 - A reverse proxy that handles SSL (e.g., [Cloudflare](https://www.cloudflare.com/)).
 
 ## Production Architecture
@@ -33,7 +33,7 @@ cp .env.example .env.prod
 ```
 
 Configure `.env.prod`:
-- Ensure `VITE_API_BASE_URL` is set to your full public domain (e.g., `https://opendesign.yourdomain.com`).
+- Ensure `VITE_API_BASE_URL` is set to your full public domain (e.g., `https://oux.yourdomain.com`).
 - Change `POSTGRES_PASSWORD` and `SPRING_DATASOURCE_PASSWORD` to something long and random.
 - Confirm `POSTGRES_DB` and other JDBC settings match.
 
@@ -49,7 +49,7 @@ This merges the base `docker-compose.yml` with the production-specific overrides
 
 ### 3. DNS & SSL Configuration
 
-1. Point your A record (e.g., `opendesign.yourdomain.com`) to your server's IP address.
+1. Point your A record (e.g., `oux.yourdomain.com`) to your server's IP address.
 2. If using Cloudflare, ensure the "Proxy" status is set to **Proxied** (the orange cloud icon).
 3. Confirm that SSL is enabled (Full/Flexible) in your Cloudflare dashboard.
 

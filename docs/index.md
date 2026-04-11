@@ -1,6 +1,6 @@
-# OpenDesign Documentation
+# oux.ai Documentation
 
-Welcome to the OpenDesign documentation hub.
+Welcome to the oux.ai documentation hub.
 
 ## Sections
 

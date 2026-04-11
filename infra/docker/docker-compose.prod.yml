@@ -26,7 +26,7 @@ services:
 
   nginx-gateway:
     image: nginx:alpine
-    container_name: opendesign-gateway
+    container_name: oux-gateway
     ports:
       - "80:80"
     volumes:

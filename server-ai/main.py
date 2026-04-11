@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="OpenDesign AI Bridge", version="1.0.0")
+app = FastAPI(title="oux.ai AI Bridge", version="1.0.0")
 
 
 class AnalyzeRequest(BaseModel):
